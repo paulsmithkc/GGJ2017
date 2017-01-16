@@ -184,7 +184,7 @@ public class GoogleMap : MonoBehaviour
                 _refreshDelayRemaining = 0;
             }
 
-            if (_scaleFactor <= _zoomOutThreshold || _scaleFactor >= _zoomInThreshold)
+            if (_scaleFactor < _zoomOutThreshold || _scaleFactor > _zoomInThreshold)
             {
                 _dirty = true;
             }
@@ -224,12 +224,12 @@ public class GoogleMap : MonoBehaviour
         bool validScaleFactor = false;
         do
         {
-            if (scaleFactor <= _zoomOutThreshold)
+            if (scaleFactor < _zoomOutThreshold)
             {
                 scaleFactor *= 2.0f;
                 --zoom;
             }
-            else if (scaleFactor >= _zoomInThreshold)
+            else if (scaleFactor > _zoomInThreshold)
             {
                 scaleFactor *= 0.5f;
                 ++zoom;
@@ -344,7 +344,7 @@ public class GoogleMap : MonoBehaviour
         Debug.LogFormat("Clamp Scale {0}, {1}, {2}", _scaleFactor, minScale, maxScale);
         _scaleFactor = Mathf.Clamp(_scaleFactor, minScale, maxScale);
 
-        if (_scaleFactor <= _zoomOutThreshold || _scaleFactor >= _zoomInThreshold)
+        if (_scaleFactor < _zoomOutThreshold || _scaleFactor > _zoomInThreshold)
         {
             Refresh();
         }
