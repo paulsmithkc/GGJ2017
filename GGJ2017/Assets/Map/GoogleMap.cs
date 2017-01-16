@@ -15,25 +15,37 @@ public class GoogleMap : MonoBehaviour
 
     private Texture2D _texture;
     private string _url;
-    private WWW _request;
+    private GoogleMapRequest _imageRequest;
     private float _refreshDelayRemaining = 0.0f;
     private bool _dirty = false;
+    private float _scaleFactor = 1.0f;
     private int _zoom = 13;
-
+    
     private const int _imageSize = 1024;
     private const int _imageScale = 2;
     private const int _minZoom = 10;
     private const int _maxZoom = 20;
+    private const float _zoomOutThreshold = 0.75f;
+    private const float _zoomInThreshold = 1.5f;
     private const string _apiKey = "AIzaSyAC1BuMdumR_gvb7nrTkGVvyJlIgp8lgvI";
+
+    private class GoogleMapRequest
+    {
+        public float scaleFactor;
+        public int zoom;
+        public string url;
+        public WWW httpRequest;
+    }
 
     // Use this for initialization
     void Start()
     {
         _texture = null;
         _url = null;
-        _request = null;
+        _imageRequest = null;
         _refreshDelayRemaining = 0;
         _dirty = true;
+        _scaleFactor = 1.0f;
 
         if (_image == null)
         {
@@ -81,7 +93,10 @@ public class GoogleMap : MonoBehaviour
         var imageSize = _imageSize;
         if (_image != null)
         {
-            var imageScale = Mathf.Min((float)Screen.width / imageSize, (float)Screen.height / imageSize);
+            var imageScale =
+                _scaleFactor * 
+                Mathf.Min((float)Screen.width / imageSize, (float)Screen.height / imageSize);
+
             var rect = _image.rectTransform;
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, imageSize * imageScale);
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, imageSize * imageScale);
@@ -94,11 +109,12 @@ public class GoogleMap : MonoBehaviour
         UpdateImageScale();
 
         // If there is an ongoing request?
-        if (_request != null)
+        if (_imageRequest != null)
         {
-            if (_request.isDone)
+            var httpRequest = _imageRequest.httpRequest;
+            if (httpRequest.isDone)
             {
-                if (_request.error == null)
+                if (httpRequest.error == null)
                 {
                     var imageSize = _imageSize;
                     if (_texture == null ||
@@ -106,7 +122,7 @@ public class GoogleMap : MonoBehaviour
                         imageSize != _texture.height)
                     {
                         var tex = new Texture2D(imageSize, imageSize);
-                        tex.LoadImage(_request.bytes);
+                        tex.LoadImage(httpRequest.bytes);
                         _image.sprite = Sprite.Create(
                             tex,
                             new Rect(0, 0, imageSize, imageSize),
@@ -116,23 +132,48 @@ public class GoogleMap : MonoBehaviour
                     }
                     else
                     {
-                        _texture.LoadImage(_request.bytes);
+                        _texture.LoadImage(httpRequest.bytes);
                     }
+
+                    // Readjust the scale factor
+                    bool validScaleFactor = false;
+                    do
+                    {
+                        if (_imageRequest.zoom < _zoom)
+                        {
+                            _scaleFactor *= 2.0f;
+                            --_zoom;
+                        }
+                        else if (_imageRequest.zoom > _zoom)
+                        {
+                            _scaleFactor *= 0.5f;
+                            ++_zoom;
+                        }
+                        else
+                        {
+                            validScaleFactor = true;
+                        }
+                    } while (!validScaleFactor);
+                    
+                    UpdateImageScale();
+
+                    // Update the current URL
+                    _url = _imageRequest.url;
 
                     //Debug.Log("GoogleMap Refresh Done");
                 }
                 else
                 {
-                    Debug.LogError("GoogleMap: " + _request.error);
+                    Debug.LogError("GoogleMap: " + httpRequest.error);
                 }
 
-                _request = null;
+                _imageRequest = null;
                 _refreshDelayRemaining = _refreshDelay;
             }
         }
         else
         {
-            var deltaTime = Time.deltaTime;
+            var deltaTime = Time.unscaledDeltaTime;
             if (deltaTime > _refreshDelayRemaining)
             {
                 _refreshDelayRemaining -= deltaTime;
@@ -143,7 +184,13 @@ public class GoogleMap : MonoBehaviour
                 _refreshDelayRemaining = 0;
             }
 
-            if (Input.location != null &&
+            if (_scaleFactor <= _zoomOutThreshold || _scaleFactor >= _zoomInThreshold)
+            {
+                _dirty = true;
+            }
+
+            if (!_dirty &&
+                Input.location != null &&
                 Input.location.isEnabledByUser &&
                 Input.location.status == LocationServiceStatus.Running)
             {
@@ -151,12 +198,7 @@ public class GoogleMap : MonoBehaviour
                 if (loc.latitude != _centerMarker.location.latitude ||
                     loc.longitude != _centerMarker.location.longitude)
                 {
-                    Debug.Log(string.Format("you: {0},{1}", loc.latitude, loc.longitude));
-
                     _dirty = true;
-                    _centerMarker.location.address = null;
-                    _centerMarker.location.latitude = loc.latitude;
-                    _centerMarker.location.longitude = loc.longitude;
                 }
             }
 
@@ -170,12 +212,45 @@ public class GoogleMap : MonoBehaviour
     public void Refresh()
     {
         _dirty = true;
-        _refreshDelayRemaining = 0;
 
-        if (_request != null) { return; }
+        if (_imageRequest != null) { return; }
         if (_image == null) { return; }
 
         //Debug.Log("GoogleMap Refresh Started");
+
+        // Readjust the zoom level
+        float scaleFactor = _scaleFactor;
+        int zoom = _zoom;
+        bool validScaleFactor = false;
+        do
+        {
+            if (scaleFactor <= _zoomOutThreshold)
+            {
+                scaleFactor *= 2.0f;
+                --zoom;
+            }
+            else if (scaleFactor >= _zoomInThreshold)
+            {
+                scaleFactor *= 0.5f;
+                ++zoom;
+            }
+            else
+            {
+                validScaleFactor = true;
+            }
+        } while (!validScaleFactor);
+
+        zoom = Mathf.Clamp(zoom, _minZoom, _maxZoom);
+
+        if (Input.location != null &&
+            Input.location.isEnabledByUser &&
+            Input.location.status == LocationServiceStatus.Running)
+        {
+            var loc = Input.location.lastData;
+            _centerMarker.location.address = null;
+            _centerMarker.location.latitude = loc.latitude;
+            _centerMarker.location.longitude = loc.longitude;
+        }
 
         var url = "https://maps.googleapis.com/maps/api/staticmap";
         var qs = new StringBuilder();
@@ -187,7 +262,7 @@ public class GoogleMap : MonoBehaviour
         if (_centerMarker != null)
         {
             qs.Append("&center=").Append(_centerMarker.location.ToString());
-            qs.Append("&zoom=").Append(_zoom);
+            qs.Append("&zoom=").Append(zoom);
             qs.Append("&markers=").Append(_centerMarker.ToString());
         }
 
@@ -217,8 +292,15 @@ public class GoogleMap : MonoBehaviour
         }
 
         url += "?" + qs.ToString();
-        _url = url;
-        _request = new WWW(url);
+
+        var httpRequest = new WWW(url);
+        _imageRequest = new GoogleMapRequest
+        {
+            scaleFactor = scaleFactor,
+            zoom = zoom,
+            url = url,
+            httpRequest = httpRequest
+        };
         _dirty = false;
 
         Debug.Log(url);
@@ -242,6 +324,32 @@ public class GoogleMap : MonoBehaviour
         }
     }
 
+    public void Zoom(Vector2 center, float scaleFactor)
+    {
+        // No change
+        if (scaleFactor == 1.0f) { return; }
+
+        // Prevent invalid scale factors
+        scaleFactor *= _scaleFactor;
+        if (scaleFactor == 0.0f || 
+            float.IsNaN(scaleFactor) ||
+            float.IsInfinity(scaleFactor)) {
+            return;
+        }
+        
+        _scaleFactor = scaleFactor;
+
+        float maxScale = Mathf.Pow(2.0f, _maxZoom - _zoom);
+        float minScale = Mathf.Pow(2.0f, _minZoom - _zoom);
+        Debug.LogFormat("Clamp Scale {0}, {1}, {2}", _scaleFactor, minScale, maxScale);
+        _scaleFactor = Mathf.Clamp(_scaleFactor, minScale, maxScale);
+
+        if (_scaleFactor <= _zoomOutThreshold || _scaleFactor >= _zoomInThreshold)
+        {
+            Refresh();
+        }
+    }
+
     public string CurrentUrl
     {
         get { return _url; }
@@ -254,7 +362,7 @@ public class GoogleMap : MonoBehaviour
 
     public bool IsRefreshing
     {
-        get { return _request != null; }
+        get { return _imageRequest != null; }
     }
 }
 

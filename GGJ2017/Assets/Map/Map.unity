@@ -103,6 +103,8 @@ GameObject:
   - component: {fileID: 100137338}
   - component: {fileID: 100137337}
   - component: {fileID: 100137341}
+  - component: {fileID: 100137343}
+  - component: {fileID: 100137342}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -198,6 +200,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12a45706fc3e4324d87c47172cf3de66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &100137342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 100137336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ccfff010ccc57e4b9be111493c316bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &100137343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 100137336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ba3fd1d69a06ea47a0febd4beb6869a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _googleMap: {fileID: 2043567463}
+  _gestureDetector: {fileID: 100137342}
 --- !u!1 &261629921
 GameObject:
   m_ObjectHideFlags: 0
@@ -1161,7 +1187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.322}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
