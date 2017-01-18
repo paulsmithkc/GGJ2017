@@ -3,6 +3,10 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
+/**
+ * Based on "Google Maps for Unity"
+ * https://www.assetstore.unity3d.com/en/#!/content/3573
+ */
 public class GoogleMap : MonoBehaviour
 {
     public GoogleMapMarker _centerMarker;

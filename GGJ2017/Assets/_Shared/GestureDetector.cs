@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/**
+ * Based on "Unity and Touch Controls"
+ * http://pixelnest.io/tutorials/unity-touch-controls/
+ */
 public class GestureDetector : MonoBehaviour
 {
     public delegate void TapEventListener(Vector2 point, Touch finger);
