@@ -93,13 +93,13 @@ Material:
       second: 1
     - first:
         name: _GridRadius
-      second: 15
+      second: 5
     - first:
         name: _GridSpacing
-      second: 1.5
+      second: 1
     - first:
         name: _GridThickness
-      second: 0.1
+      second: 0.05
     - first:
         name: _Metallic
       second: 0

@@ -8,6 +8,7 @@ public class Launcher : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        Application.RequestUserAuthorization(UserAuthorization.WebCam);
     }
 
     // Update is called once per frame
