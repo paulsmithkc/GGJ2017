@@ -190,6 +190,7 @@ MonoBehaviour:
   _camera: {fileID: 20200471910218212}
   _cameraTarget: {fileID: 23228659368741728}
   _cameraFPS: 30
+  _smoothedAcceleration: {x: 0, y: 0, z: 0}
 --- !u!124 &124186501990960610
 Behaviour:
   m_ObjectHideFlags: 1

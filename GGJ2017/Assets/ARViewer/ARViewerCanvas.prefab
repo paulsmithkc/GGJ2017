@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 114280832532609330}
   - component: {fileID: 114933153910452152}
   - component: {fileID: 114507250810354450}
+  - component: {fileID: 114958693065054096}
   m_Layer: 5
   m_Name: ARViewerCanvas
   m_TagString: Untagged
@@ -293,6 +294,10 @@ MonoBehaviour:
   _player: {fileID: 114933153910452152}
   _healthField: {fileID: 114937031674050566}
   _energyField: {fileID: 114026835092979932}
+  _cameraGyro: {fileID: 0}
+  _gestureDetector: {fileID: 114958693065054096}
+  _bulletPrefab: {fileID: 1440357631082394, guid: f8be021e97969404097c79d559fb564e,
+    type: 2}
 --- !u!114 &114756330682770548
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -451,6 +456,17 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: MMM
+--- !u!114 &114958693065054096
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1291630405115038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ccfff010ccc57e4b9be111493c316bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!222 &222291208603287048
 CanvasRenderer:
   m_ObjectHideFlags: 1
