@@ -16,15 +16,15 @@ public class CameraGyro : MonoBehaviour
     private GameObject _cameraParent;
     private string _deviceName;
     private WebCamTexture _cameraTexture;
-    private const float _accelerationDuration = 0.5f;
-    private Vector3 _accelerationOverDuration;
+    private const float _smoothingDuration = 0.5f;
+    public Vector3 _smoothedAcceleration;
 
     // Use this for initialization
     void Start()
     {
         Application.RequestUserAuthorization(UserAuthorization.WebCam);
         
-        _accelerationOverDuration = Vector3.down * 9.8f;
+        _smoothedAcceleration = Vector3.down * 9.8f;
 
         // Find the camera
         if (_camera == null)
@@ -35,7 +35,7 @@ public class CameraGyro : MonoBehaviour
         // Reparent the camera
         _cameraParent = new GameObject("CameraParent");
         _cameraParent.transform.position = _camera.transform.position;
-        _cameraParent.transform.Rotate(Vector3.right, 90);
+        _cameraParent.transform.Rotate(Vector3.right, 90.0f);
 
         // Enable the gyro
         Input.gyro.enabled = true;
@@ -56,16 +56,20 @@ public class CameraGyro : MonoBehaviour
         {
             var e = Input.GetAccelerationEvent(i);
 
-            _accelerationOverDuration = Vector3.Lerp(
-                _accelerationOverDuration,
+            _smoothedAcceleration = Vector3.Lerp(
+                _smoothedAcceleration,
                 e.acceleration,
-                e.deltaTime / (_accelerationDuration + e.deltaTime)
+                e.deltaTime / (_smoothingDuration + e.deltaTime)
             );
         }
 
-        Vector3 accel = _accelerationOverDuration;
+        Vector3 accel = _smoothedAcceleration.normalized;
+        //var r = Quaternion.LookRotation(
+        //    Vector3.Cross(accel, Vector3.right),
+        //    -accel
+        //);
         var r =
-            Quaternion.AngleAxis(Mathf.Atan2(-accel.x, new Vector2(accel.y, accel.z).magnitude) * Mathf.Rad2Deg, Vector3.forward) *
+            //Quaternion.AngleAxis(Mathf.Atan2(-accel.x, new Vector2(accel.y, accel.z).magnitude) * Mathf.Rad2Deg, Vector3.forward) *
             Quaternion.AngleAxis(-Mathf.Atan2(accel.y, accel.z) * Mathf.Rad2Deg - 90.0f, Vector3.right);
         _camera.transform.localRotation = r;
 
@@ -148,7 +152,15 @@ public class CameraGyro : MonoBehaviour
             Gizmos.DrawRay(pos, Input.acceleration);
 
             Gizmos.color = Color.cyan;
-            Gizmos.DrawRay(pos, _accelerationOverDuration);
+            Gizmos.DrawRay(pos, _smoothedAcceleration);
         }
     }
+
+    //public Vector3 CameraForward
+    //{
+    //    get
+    //    {
+    //        return _camera.transform.forward;
+    //    }
+    //}
 }

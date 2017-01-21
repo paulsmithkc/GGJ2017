@@ -14,6 +14,7 @@ public class GestureDetector : MonoBehaviour
     
     public event TapEventListener tap;
     public event DragEventListener drag;
+    public event DragEventListener dragEnd;
     public event PinchEventListener pinch;
     public event PinchEventListener pinchStart;
     public event PinchEventListener pinchEnd;
@@ -127,9 +128,9 @@ public class GestureDetector : MonoBehaviour
                         }
                         else
                         {
-                            if (drag != null)
+                            if (dragEnd != null)
                             {
-                                drag(prevState.position, touch.position, touch);
+                                dragEnd(prevState.position, touch.position, touch);
                             }
                         }
                     }
