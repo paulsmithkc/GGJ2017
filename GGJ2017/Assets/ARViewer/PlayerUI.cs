@@ -9,6 +9,8 @@ public class PlayerUI : MonoBehaviour {
     public Player _player;
 	public Text _healthField;
     public Text _energyField;
+    public Text _rotationField;
+    public Text _locationField;
 
     public CameraGyro _cameraGyro;
     public GestureDetector _gestureDetector;
@@ -48,8 +50,33 @@ public class PlayerUI : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        _healthField.text = _player.CurrentHealth.ToString();
-        _energyField.text = _player.CurrentEnergy.ToString();
+        if (_healthField != null && _player != null)
+        {
+            _healthField.text = _player.CurrentHealth.ToString();
+        }
+        if (_energyField != null && _player != null)
+        {
+            _energyField.text = _player.CurrentEnergy.ToString();
+        }
+        if (_rotationField != null && _cameraGyro != null)
+        {
+            _rotationField.text = string.Format(
+                "{0,3:0} {1,3:0} {2,3:0}", 
+                _cameraGyro.roll, 
+                _cameraGyro.pitch, 
+                _cameraGyro.heading
+            );
+        }
+        if (_locationField != null && _cameraGyro != null)
+        {
+            _locationField.text = string.Format(
+                "{0:F6} {1:F6} {2:F2} {3}",
+                _cameraGyro.latitude,
+                _cameraGyro.longitude,
+                _cameraGyro.altitude,
+                _cameraGyro.locationStatus
+            );
+        }
     }
 
     private void OnDrag(Vector2 start, Vector2 end, Touch finger)

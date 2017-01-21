@@ -58,13 +58,11 @@ public class GoogleMap : MonoBehaviour
 
         UpdateImageScale();
 
-        if (Input.location != null &&
-            Input.location.isEnabledByUser &&
-            Input.location.status != LocationServiceStatus.Running)
+        if (SystemInfo.supportsLocationService && Input.location.isEnabledByUser)
         {
             try
             {
-                Input.location.Start();
+                Input.location.Start(1.0f, 1.0f);
                 Debug.Log("GoogleMap started location service");
             }
             catch (Exception ex)

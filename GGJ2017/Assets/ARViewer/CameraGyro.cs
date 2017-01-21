@@ -16,6 +16,18 @@ public class CameraGyro : MonoBehaviour
     private string _deviceName;
     private WebCamTexture _cameraTexture;
     private const float _smoothingDuration = 0.2f;
+    private LocationInfo? _lastLocation;
+    private float? _roll;
+    private float? _pitch;
+    private float? _heading;
+
+    private void StartLocationService()
+    {
+        if (SystemInfo.supportsLocationService && Input.location.isEnabledByUser)
+        {
+            Input.location.Start(1.0f, 1.0f);
+        }
+    }
 
     // Use this for initialization
     void Start()
@@ -34,9 +46,21 @@ public class CameraGyro : MonoBehaviour
         //_cameraParent.transform.Rotate(Vector3.right, 90.0f);
 
         // Enable the gyro
-        Input.gyro.enabled = true;
+        if (SystemInfo.supportsGyroscope)
+        {
+            Input.gyro.enabled = false;
+        }
+
         // Enable the compass
         Input.compass.enabled = true;
+
+        // Start the location services
+        _lastLocation = null;
+        StartLocationService();
+
+        _roll = null;
+        _pitch = null;
+        _heading = null;
     }
 
     // Update is called once per frame
@@ -54,6 +78,9 @@ public class CameraGyro : MonoBehaviour
             //Debug.LogFormat("Accl {0} {1} {2}", accel.x, accel.y, accel.z);
             //Debug.LogFormat("Roll Pitch {0} {1}", roll, pitch);
 
+            _roll = roll;
+            _pitch = pitch;
+
             cameraRotation =
                 Quaternion.AngleAxis(pitch, Vector3.right) *
                 Quaternion.AngleAxis(roll, Vector3.forward);
@@ -62,8 +89,9 @@ public class CameraGyro : MonoBehaviour
         if (Input.compass.enabled)
         {
             float heading = Input.compass.trueHeading;
-            Debug.LogFormat("Heading {0}", heading);
+            //Debug.LogFormat("Heading {0}", heading);
             cameraRotation = Quaternion.AngleAxis(heading, Vector3.up) * cameraRotation;
+            _heading = heading;
         }
 
         _camera.transform.localRotation = Quaternion.Lerp(
@@ -71,6 +99,27 @@ public class CameraGyro : MonoBehaviour
             cameraRotation,
             deltaTime / (_smoothingDuration + deltaTime)
         );
+
+        //if (Input.location.status == LocationServiceStatus.Running)
+        {
+            var loc = Input.location.lastData;
+            if (_lastLocation == null && (loc.latitude != 0.0f || loc.longitude != 0.0f))
+            {
+                _lastLocation = loc;
+            }
+            else if (_lastLocation != null)
+            {
+                //_camera.transform.position += new Vector3(
+                //    loc.longitude - _lastLocation.Value.longitude * 1000.0f,
+                //    0.0f,
+                //    loc.latitude - _lastLocation.Value.latitude * 1000.0f
+                //);
+            }
+        }
+        //if (Input.location.status != LocationServiceStatus.Running)
+        //{
+        //    StartLocationService();
+        //}
         
         // Rotate the camera at a constant speed
         // _camera.transform.localRotation = Quaternion.AngleAxis(Time.time * 36.0f, Vector3.up);
@@ -129,7 +178,7 @@ public class CameraGyro : MonoBehaviour
             transform.position;
 
         // Gyro
-        if (Input.gyro.enabled)
+        if (SystemInfo.supportsGyroscope && Input.gyro.enabled)
         {
             Quaternion r1 = Input.gyro.attitude;
             Quaternion r2 = new Quaternion(r1.x, r1.y, r1.z, r1.w);
@@ -173,4 +222,39 @@ public class CameraGyro : MonoBehaviour
     //        return _camera.transform.forward;
     //    }
     //}
+
+    public float? latitude
+    {
+        get { return _lastLocation != null ? _lastLocation.Value.latitude : (float?)null; }
+    }
+
+    public float? longitude
+    {
+        get { return _lastLocation != null ? _lastLocation.Value.longitude : (float?)null; }
+    }
+
+    public float? altitude
+    {
+        get { return _lastLocation != null ? _lastLocation.Value.altitude : (float?)null; }
+    }
+
+    public float? roll
+    {
+        get { return _roll; }
+    }
+
+    public float? pitch
+    {
+        get { return _pitch; }
+    }
+
+    public float? heading
+    {
+        get { return _heading; }
+    }
+
+    public LocationServiceStatus locationStatus
+    {
+        get { return Input.location.status; }
+    }
 }
