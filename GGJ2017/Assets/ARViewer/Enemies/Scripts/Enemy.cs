@@ -8,7 +8,11 @@ public class Enemy : MonoBehaviour {
     public float _oscillatePeriod = 2.0f;
     public float _oscillateAmplitude = 2.0f;
     public float _oscillateTheta;
-    
+
+    public int Maxhealth = 3;
+    public int CurrentHealth = 3;
+    public bool Dead = false;
+
     // Use this for initialization
     void Start () {
         if (_rigidBody == null)
@@ -18,6 +22,8 @@ public class Enemy : MonoBehaviour {
 
         //float tau = Mathf.PI * 2.0f;
         _oscillateTheta = Random.Range(0.0f, 0.01f);
+
+        CurrentHealth = Maxhealth;
     }
 	
 	// Update is called once per frame
@@ -31,5 +37,14 @@ public class Enemy : MonoBehaviour {
         }
 
         _rigidBody.velocity = Vector3.up * Mathf.Cos(_oscillateTheta) * _oscillateAmplitude * deltaTime;
+    }
+
+    public void AddHealth(int value)
+    {
+        CurrentHealth += value;
+        if (CurrentHealth <= 0)
+        {
+            Dead = true;
+        }
     }
 }

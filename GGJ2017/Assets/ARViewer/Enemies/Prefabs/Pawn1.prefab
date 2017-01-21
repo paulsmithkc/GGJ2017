@@ -159,6 +159,9 @@ MonoBehaviour:
   _oscillatePeriod: 8
   _oscillateAmplitude: 80
   _oscillateTheta: 0
+  Maxhealth: 8
+  CurrentHealth: 8
+  Dead: 0
 --- !u!135 &135337780830475210
 SphereCollider:
   m_ObjectHideFlags: 1
