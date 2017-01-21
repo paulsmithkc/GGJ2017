@@ -6,11 +6,15 @@ public class Player : MonoBehaviour {
 	
 	public int CurrentHealth = 100;
 	public int MaxHealth = 100;
-	public bool Dead = false;
+    public int CurrentEnergy = 100;
+    public int MaxEnergy = 100;
+    public bool Dead = false;
+    
 	
 	// Use this for initialization
 	void Start () {
 		CurrentHealth = MaxHealth;
+        CurrentEnergy = MaxEnergy;
 		Dead = false; 
 	}
 	
@@ -28,7 +32,22 @@ public class Player : MonoBehaviour {
 		}
 		if(CurrentHealth <= 0)
 		{
+            CurrentHealth = 0;
 			Dead = true;
 		}
 	}
+
+    public void AddEnergy(int value)
+    {
+        CurrentEnergy += value;
+        if(CurrentEnergy > MaxEnergy)
+        {
+            CurrentEnergy = MaxEnergy;
+        }
+
+        if(MaxEnergy <= 0)
+        {
+            MaxEnergy = 0;
+        }
+    }
 }
