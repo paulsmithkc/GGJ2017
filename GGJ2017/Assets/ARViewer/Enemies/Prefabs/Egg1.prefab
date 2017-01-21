@@ -156,11 +156,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96634f92b208f304da76eaaf67fc72f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _fragmentPrefab: {fileID: 1440357631082394, guid: f8be021e97969404097c79d559fb564e,
+    type: 2}
   _rigidBody: {fileID: 54402037580759520}
   _oscillatePeriod: 7
   _oscillateAmplitude: 2
   _oscillateTheta: 0
-  Maxhealth: 2
+  Maxhealth: 120
   CurrentHealth: 2
   Dead: 0
 --- !u!114 &114967751043092582
