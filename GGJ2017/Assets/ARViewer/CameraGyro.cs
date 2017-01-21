@@ -100,7 +100,12 @@ public class CameraGyro : MonoBehaviour
             deltaTime / (_smoothingDuration + deltaTime)
         );
 
-        //if (Input.location.status == LocationServiceStatus.Running)
+        if (Input.location.status != LocationServiceStatus.Initializing &&
+            Input.location.status != LocationServiceStatus.Running)
+        {
+            StartLocationService();
+        }
+        else if (Input.location.status == LocationServiceStatus.Running)
         {
             var loc = Input.location.lastData;
             if (_lastLocation == null && (loc.latitude != 0.0f || loc.longitude != 0.0f))
@@ -109,17 +114,26 @@ public class CameraGyro : MonoBehaviour
             }
             else if (_lastLocation != null)
             {
+                // SEE https://en.wikipedia.org/wiki/Geographic_coordinate_system
+
+                double latitudeToMeters = 
+                    111132.92 
+                    - 559.82 * Mathf.Cos(2 * loc.latitude) 
+                    + 1.175 * Mathf.Cos(4 * loc.latitude)
+                    - 0.0023 * Mathf.Cos(6 * loc.latitude);
+                double longitudeToMeters =
+                    111412.84 * Mathf.Cos(loc.latitude)
+                    - 93.5 * Mathf.Cos(3 * loc.latitude)
+                    + 0.118 * Mathf.Cos(5 * loc.latitude);
+
                 //_camera.transform.position += new Vector3(
-                //    loc.longitude - _lastLocation.Value.longitude * 1000.0f,
+                //    (float)((loc.longitude - _lastLocation.Value.longitude) * longitudeToMeters),
                 //    0.0f,
-                //    loc.latitude - _lastLocation.Value.latitude * 1000.0f
+                //    (float)((loc.latitude - _lastLocation.Value.latitude) * latitudeToMeters)
                 //);
+                _lastLocation = loc;
             }
         }
-        //if (Input.location.status != LocationServiceStatus.Running)
-        //{
-        //    StartLocationService();
-        //}
         
         // Rotate the camera at a constant speed
         // _camera.transform.localRotation = Quaternion.AngleAxis(Time.time * 36.0f, Vector3.up);
