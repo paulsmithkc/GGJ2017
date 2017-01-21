@@ -98,6 +98,7 @@ public class CameraGyro : MonoBehaviour
             if (!string.IsNullOrEmpty(_deviceName))
             {
                 _cameraTexture.Play();
+                _cameraTarget.gameObject.SetActive(true);
             }
         }
 
