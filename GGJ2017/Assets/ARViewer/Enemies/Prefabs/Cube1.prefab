@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96634f92b208f304da76eaaf67fc72f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fragmentPrefab: {fileID: 1440357631082394, guid: f8be021e97969404097c79d559fb564e,
+  _fragmentPrefab: {fileID: 1074693114152010, guid: 1ca345c9c0b34124b9724a92d31f5c9a,
     type: 2}
   _rigidBody: {fileID: 54553187728800630}
   _oscillatePeriod: 6
