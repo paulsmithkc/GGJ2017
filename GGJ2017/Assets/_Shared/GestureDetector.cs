@@ -19,6 +19,7 @@ public class GestureDetector : MonoBehaviour
     public event PinchEventListener pinchStart;
     public event PinchEventListener pinchEnd;
 
+    public bool _pinchEnabled = true;
     private bool _pinching = false;
     //private Touch _pinchFinger1;
     //private Touch _pinchFinger2;
@@ -30,13 +31,18 @@ public class GestureDetector : MonoBehaviour
     void Start()
     {
         _pinching = false;
+        _prevFingerStates.Clear();
     }
 
     // Update is called once per frame
     void Update()
     {
         // Pinching only works with two fingers
-        if (_pinching || Input.touchCount == 2)
+        if (!_pinchEnabled)
+        {
+            _pinching = false;
+        }
+        else if (_pinching || Input.touchCount == 2)
         {
             var finger1 = Input.GetTouch(0);
             var finger2 = Input.GetTouch(1);
