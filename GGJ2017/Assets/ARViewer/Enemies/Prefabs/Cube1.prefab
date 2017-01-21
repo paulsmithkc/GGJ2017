@@ -157,7 +157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigidBody: {fileID: 54553187728800630}
   _oscillatePeriod: 6
-  _oscillateAmplitude: 80
+  _oscillateAmplitude: 2
   _oscillateTheta: 0
   Maxhealth: 4
   CurrentHealth: 4

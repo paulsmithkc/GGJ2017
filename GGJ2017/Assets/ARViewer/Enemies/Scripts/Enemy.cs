@@ -5,7 +5,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour {
 
     public Rigidbody _rigidBody;
-    public float _oscillatePeriod = 2.0f;
+    public float _oscillatePeriod = 4.0f;
     public float _oscillateAmplitude = 2.0f;
     public float _oscillateTheta;
 
@@ -20,8 +20,10 @@ public class Enemy : MonoBehaviour {
             _rigidBody = GetComponent<Rigidbody>();
         }
 
-        //float tau = Mathf.PI * 2.0f;
-        _oscillateTheta = Random.Range(0.0f, 0.01f);
+        float tau = Mathf.PI * 2.0f;
+        _oscillateTheta = Random.Range(0.0f, tau);
+        _rigidBody.position += Vector3.up * (Mathf.Cos(_oscillateTheta) * _oscillateAmplitude);
+        _rigidBody.velocity = Vector3.zero;
 
         CurrentHealth = Maxhealth;
     }
@@ -30,13 +32,15 @@ public class Enemy : MonoBehaviour {
 	void Update () {
         float deltaTime = Time.deltaTime;
         float tau = Mathf.PI * 2.0f;
-        _oscillateTheta += (deltaTime / _oscillatePeriod) * tau;
-        if (_oscillateTheta >= tau)
-        {
-            _oscillateTheta -= tau;
-        }
 
-        _rigidBody.velocity = Vector3.up * Mathf.Cos(_oscillateTheta) * _oscillateAmplitude * deltaTime;
+        float prevTheta = _oscillateTheta;
+        float curTheta = prevTheta + (deltaTime / _oscillatePeriod) * tau;
+        if (curTheta >= tau) { curTheta -= tau; }
+
+        float oscillateDelta = Mathf.Cos(curTheta) - Mathf.Cos(prevTheta); 
+        _rigidBody.position += Vector3.up * (oscillateDelta * _oscillateAmplitude);
+        _rigidBody.velocity = Vector3.zero;
+        _oscillateTheta = curTheta;
     }
 
     public void AddHealth(int value)
