@@ -16,15 +16,12 @@ public class CameraGyro : MonoBehaviour
     private GameObject _cameraParent;
     private string _deviceName;
     private WebCamTexture _cameraTexture;
-    private const float _smoothingDuration = 0.5f;
-    public Vector3 _smoothedAcceleration;
+    private const float _smoothingDuration = 0.2f;
 
     // Use this for initialization
     void Start()
     {
         Application.RequestUserAuthorization(UserAuthorization.WebCam);
-        
-        _smoothedAcceleration = Vector3.down * 9.8f;
 
         // Find the camera
         if (_camera == null)
@@ -35,7 +32,7 @@ public class CameraGyro : MonoBehaviour
         // Reparent the camera
         _cameraParent = new GameObject("CameraParent");
         _cameraParent.transform.position = _camera.transform.position;
-        _cameraParent.transform.Rotate(Vector3.right, 90.0f);
+        //_cameraParent.transform.Rotate(Vector3.right, 90.0f);
 
         // Enable the gyro
         Input.gyro.enabled = true;
@@ -46,33 +43,23 @@ public class CameraGyro : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        float deltaTime = Time.deltaTime;
 
+        Vector3 accel = Input.acceleration;
+        float roll = Mathf.Atan2(-accel.x , -accel.y) * Mathf.Rad2Deg;
+        float pitch = -Mathf.Atan2(accel.z, new Vector2(accel.x, accel.y).magnitude) * Mathf.Rad2Deg;
+        Debug.LogFormat("Accl {0} {1} {2}", accel.x, accel.y, accel.z);
+        Debug.LogFormat("Roll Pitch {0} {1}", roll, pitch);
+
+        _camera.transform.localRotation = Quaternion.Lerp(
+            _camera.transform.localRotation,
+            Quaternion.AngleAxis(pitch, Vector3.right) * Quaternion.AngleAxis(roll, Vector3.forward),
+            deltaTime / (_smoothingDuration + deltaTime)
+        );
+        
         // Rotate the camera at a constant speed
         // _camera.transform.localRotation = Quaternion.AngleAxis(Time.time * 36.0f, Vector3.up);
-
-        // Rotate the camera using the accelerometer
-        // Debug.Log("accel: " + Input.accelerationEventCount);
-        for (int i = 0, n = Input.accelerationEventCount; i < n; ++i)
-        {
-            var e = Input.GetAccelerationEvent(i);
-
-            _smoothedAcceleration = Vector3.Lerp(
-                _smoothedAcceleration,
-                e.acceleration,
-                e.deltaTime / (_smoothingDuration + e.deltaTime)
-            );
-        }
-
-        Vector3 accel = _smoothedAcceleration.normalized;
-        //var r = Quaternion.LookRotation(
-        //    Vector3.Cross(accel, Vector3.right),
-        //    -accel
-        //);
-        var r =
-            //Quaternion.AngleAxis(Mathf.Atan2(-accel.x, new Vector2(accel.y, accel.z).magnitude) * Mathf.Rad2Deg, Vector3.forward) *
-            Quaternion.AngleAxis(-Mathf.Atan2(accel.y, accel.z) * Mathf.Rad2Deg - 90.0f, Vector3.right);
-        _camera.transform.localRotation = r;
-
+        
         // Update the camera orientation based on the current orientation of the gyro
         //Quaternion r1 = Input.gyro.attitude;
         //Quaternion r2 = new Quaternion(r1.x, r1.y, r1.z, r1.w);
@@ -150,9 +137,6 @@ public class CameraGyro : MonoBehaviour
 
             Gizmos.color = Color.blue;
             Gizmos.DrawRay(pos, Input.acceleration);
-
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawRay(pos, _smoothedAcceleration);
         }
     }
 
