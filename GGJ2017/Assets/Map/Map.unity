@@ -898,6 +898,16 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114419103738262556, guid: b16621eaee4756641bc920064e38157b,
+        type: 2}
+      propertyPath: _centerMarker.location.latitude
+      value: 38.710472
+      objectReference: {fileID: 0}
+    - target: {fileID: 114419103738262556, guid: b16621eaee4756641bc920064e38157b,
+        type: 2}
+      propertyPath: _centerMarker.location.longitude
+      value: -90.3116
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b16621eaee4756641bc920064e38157b, type: 2}
   m_IsPrefabParent: 0
