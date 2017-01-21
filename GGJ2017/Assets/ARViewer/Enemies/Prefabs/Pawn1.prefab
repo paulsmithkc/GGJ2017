@@ -40,6 +40,7 @@ GameObject:
   - component: {fileID: 135337780830475210}
   - component: {fileID: 54327039727147070}
   - component: {fileID: 114413295608685242}
+  - component: {fileID: 114557329310574176}
   m_Layer: 0
   m_Name: Pawn1
   m_TagString: Untagged
@@ -162,6 +163,19 @@ MonoBehaviour:
   Maxhealth: 8
   CurrentHealth: 8
   Dead: 0
+--- !u!114 &114557329310574176
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1990903661985798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dec87c84e4383a4e89493d3eaba7a02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bulletPrefab: {fileID: 1440357631082394, guid: f8be021e97969404097c79d559fb564e,
+    type: 2}
 --- !u!135 &135337780830475210
 SphereCollider:
   m_ObjectHideFlags: 1

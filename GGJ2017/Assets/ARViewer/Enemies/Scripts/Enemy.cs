@@ -22,7 +22,7 @@ public class Enemy : MonoBehaviour {
 
         float tau = Mathf.PI * 2.0f;
         _oscillateTheta = Random.Range(0.0f, tau);
-        _rigidBody.position += Vector3.up * (Mathf.Cos(_oscillateTheta) * _oscillateAmplitude);
+        _rigidBody.position += Vector3.up * (Mathf.Sin(_oscillateTheta) * _oscillateAmplitude);
         _rigidBody.velocity = Vector3.zero;
 
         CurrentHealth = Maxhealth;
@@ -35,9 +35,12 @@ public class Enemy : MonoBehaviour {
 
         float prevTheta = _oscillateTheta;
         float curTheta = prevTheta + (deltaTime / _oscillatePeriod) * tau;
-        if (curTheta >= tau) { curTheta -= tau; }
+        if (curTheta >= tau)
+        {
+            curTheta -= tau;
+        }
 
-        float oscillateDelta = Mathf.Cos(curTheta) - Mathf.Cos(prevTheta); 
+        float oscillateDelta = Mathf.Sin(curTheta) - Mathf.Sin(prevTheta); 
         _rigidBody.position += Vector3.up * (oscillateDelta * _oscillateAmplitude);
         _rigidBody.velocity = Vector3.zero;
         _oscillateTheta = curTheta;

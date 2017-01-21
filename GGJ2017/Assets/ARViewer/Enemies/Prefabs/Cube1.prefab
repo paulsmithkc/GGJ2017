@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 135536853229814598}
   - component: {fileID: 54553187728800630}
   - component: {fileID: 114536757662360752}
+  - component: {fileID: 114711265521090542}
   m_Layer: 0
   m_Name: Cube1
   m_TagString: Untagged
@@ -162,6 +163,19 @@ MonoBehaviour:
   Maxhealth: 4
   CurrentHealth: 4
   Dead: 0
+--- !u!114 &114711265521090542
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1014990126367564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dec87c84e4383a4e89493d3eaba7a02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bulletPrefab: {fileID: 1440357631082394, guid: f8be021e97969404097c79d559fb564e,
+    type: 2}
 --- !u!135 &135536853229814598
 SphereCollider:
   m_ObjectHideFlags: 1

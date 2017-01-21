@@ -357,7 +357,7 @@ MonoBehaviour:
   _energyField: {fileID: 114026835092979932}
   _cameraGyro: {fileID: 0}
   _gestureDetector: {fileID: 114958693065054096}
-  _bulletPrefab: {fileID: 1440357631082394, guid: f8be021e97969404097c79d559fb564e,
+  _bulletPrefab: {fileID: 1833950873585796, guid: 2fb074f3ae36c194eb8b5b35c6890cd8,
     type: 2}
 --- !u!114 &114756330682770548
 MonoBehaviour:
