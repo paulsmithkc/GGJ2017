@@ -16,8 +16,8 @@ public class Enemy : MonoBehaviour {
             _rigidBody = GetComponent<Rigidbody>();
         }
 
-        float tau = Mathf.PI * 2.0f;
-        _oscillateTheta = Random.Range(-tau, tau);
+        //float tau = Mathf.PI * 2.0f;
+        _oscillateTheta = Random.Range(0.0f, 0.01f);
     }
 	
 	// Update is called once per frame
