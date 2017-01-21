@@ -68,6 +68,7 @@ public class Enemy : MonoBehaviour {
 
             Destroy(this.gameObject);
         }
+
     }
 
     public void AddHealth(int value)
