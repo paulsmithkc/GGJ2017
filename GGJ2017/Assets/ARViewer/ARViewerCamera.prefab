@@ -42,6 +42,8 @@ GameObject:
   - component: {fileID: 124186501990960610}
   - component: {fileID: 81944840042803474}
   - component: {fileID: 114176926315799122}
+  - component: {fileID: 65845372056158418}
+  - component: {fileID: 114946505645795920}
   m_Layer: 0
   m_Name: ARViewerCamera
   m_TagString: MainCamera
@@ -162,6 +164,18 @@ MeshCollider:
   m_InflateMesh: 0
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &65845372056158418
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1534559197315490}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 1, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!81 &81944840042803474
 AudioListener:
   m_ObjectHideFlags: 1
@@ -191,6 +205,22 @@ MonoBehaviour:
   _cameraTarget: {fileID: 23228659368741728}
   _cameraFPS: 30
   _smoothedAcceleration: {x: 0, y: 0, z: 0}
+--- !u!114 &114946505645795920
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1534559197315490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5da14ae51f13aec4690d21b41a029eff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentHealth: 100
+  MaxHealth: 100
+  CurrentEnergy: 10
+  MaxEnergy: 10
+  Dead: 0
 --- !u!124 &124186501990960610
 Behaviour:
   m_ObjectHideFlags: 1

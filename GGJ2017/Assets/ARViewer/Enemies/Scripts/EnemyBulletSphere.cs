@@ -22,7 +22,9 @@ public class EnemyBulletSphere : MonoBehaviour {
 	void Update ()
     {
         float deltaTime = Time.deltaTime;
-        if (_enemy._oscillateTheta >= Mathf.PI * 0.25 && _enemy._oscillateTheta <= Mathf.PI * 0.75)
+        if (!_enemy.Dead &&
+            _enemy._oscillateTheta >= Mathf.PI * 0.25 && 
+            _enemy._oscillateTheta <= Mathf.PI * 0.75)
         {
             _shotDelay -= deltaTime;
             if (_shotDelay <= 0)

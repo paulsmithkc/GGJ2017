@@ -92,7 +92,6 @@ GameObject:
   - component: {fileID: 114423172209798446}
   - component: {fileID: 114841757051781328}
   - component: {fileID: 114280832532609330}
-  - component: {fileID: 114933153910452152}
   - component: {fileID: 114507250810354450}
   - component: {fileID: 114958693065054096}
   m_Layer: 5
@@ -352,7 +351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff2988cec6510aa4fa88f0cb34100e1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _player: {fileID: 114933153910452152}
+  _player: {fileID: 0}
   _healthField: {fileID: 114937031674050566}
   _energyField: {fileID: 114026835092979932}
   _cameraGyro: {fileID: 0}
@@ -495,22 +494,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114933153910452152
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1291630405115038}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5da14ae51f13aec4690d21b41a029eff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CurrentHealth: 100
-  MaxHealth: 100
-  CurrentEnergy: 10
-  MaxEnergy: 10
-  Dead: 0
 --- !u!114 &114937031674050566
 MonoBehaviour:
   m_ObjectHideFlags: 1
