@@ -8,7 +8,6 @@ using UnityEngine;
  */
 public class CameraGyro : MonoBehaviour
 {
-
     public Camera _camera;
     public MeshRenderer _cameraTarget;
     public int _cameraFPS = 30;
@@ -45,15 +44,31 @@ public class CameraGyro : MonoBehaviour
     {
         float deltaTime = Time.deltaTime;
 
-        Vector3 accel = Input.acceleration;
-        float roll = Mathf.Atan2(-accel.x , -accel.y) * Mathf.Rad2Deg;
-        float pitch = -Mathf.Atan2(accel.z, new Vector2(accel.x, accel.y).magnitude) * Mathf.Rad2Deg;
-        Debug.LogFormat("Accl {0} {1} {2}", accel.x, accel.y, accel.z);
-        Debug.LogFormat("Roll Pitch {0} {1}", roll, pitch);
+        Quaternion cameraRotation = Quaternion.identity;
+
+        if (SystemInfo.supportsAccelerometer)
+        {
+            Vector3 accel = Input.acceleration;
+            float roll = Mathf.Atan2(-accel.x, -accel.y) * Mathf.Rad2Deg;
+            float pitch = -Mathf.Atan2(accel.z, new Vector2(accel.x, accel.y).magnitude) * Mathf.Rad2Deg;
+            //Debug.LogFormat("Accl {0} {1} {2}", accel.x, accel.y, accel.z);
+            //Debug.LogFormat("Roll Pitch {0} {1}", roll, pitch);
+
+            cameraRotation =
+                Quaternion.AngleAxis(pitch, Vector3.right) *
+                Quaternion.AngleAxis(roll, Vector3.forward);
+        }
+
+        if (Input.compass.enabled)
+        {
+            float heading = Input.compass.trueHeading;
+            Debug.LogFormat("Heading {0}", heading);
+            cameraRotation = Quaternion.AngleAxis(heading, Vector3.up) * cameraRotation;
+        }
 
         _camera.transform.localRotation = Quaternion.Lerp(
             _camera.transform.localRotation,
-            Quaternion.AngleAxis(pitch, Vector3.right) * Quaternion.AngleAxis(roll, Vector3.forward),
+            cameraRotation,
             deltaTime / (_smoothingDuration + deltaTime)
         );
         
@@ -128,6 +143,7 @@ public class CameraGyro : MonoBehaviour
             Gizmos.DrawRay(pos, Quaternion.Euler(0.0f, Input.compass.trueHeading, 0.0f) * Vector3.forward);
         }
         // Accelerometer
+        if (SystemInfo.supportsAccelerometer)
         {
             //Gizmos.color = Color.black;
             //foreach (var a in Input.accelerationEvents)
@@ -137,6 +153,16 @@ public class CameraGyro : MonoBehaviour
 
             Gizmos.color = Color.blue;
             Gizmos.DrawRay(pos, Input.acceleration);
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (_cameraTexture != null)
+        {
+            _cameraTexture.Stop();
+            Destroy(_cameraTexture);
+            _cameraTexture = null;
         }
     }
 

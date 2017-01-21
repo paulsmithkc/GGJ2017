@@ -27,7 +27,11 @@ public class PlayerUI : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        if (_gestureDetector == null)
+        if (_player == null)
+        {
+            _player = GameObject.FindObjectOfType<Player>();
+        }
+        if (_cameraGyro == null)
         {
             _cameraGyro = GameObject.FindObjectOfType<CameraGyro>();
         }
