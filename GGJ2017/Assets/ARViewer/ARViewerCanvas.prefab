@@ -508,8 +508,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CurrentHealth: 100
   MaxHealth: 100
-  CurrentEnergy: 100
-  MaxEnergy: 100
+  CurrentEnergy: 10
+  MaxEnergy: 10
   Dead: 0
 --- !u!114 &114937031674050566
 MonoBehaviour:

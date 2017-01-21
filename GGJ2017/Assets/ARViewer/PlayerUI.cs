@@ -13,6 +13,7 @@ public class PlayerUI : MonoBehaviour {
     public CameraGyro _cameraGyro;
     public GestureDetector _gestureDetector;
     public GameObject _bulletPrefab;
+    private const int _flingCost = 2;
 
     private Dictionary<int, FlingState> _flingStates = new Dictionary<int, FlingState>();
 
@@ -67,6 +68,15 @@ public class PlayerUI : MonoBehaviour {
         {
             _flingStates.Remove(fingerId);
 
+            if (_player.CurrentEnergy >= _flingCost)
+            {
+                _player.AddEnergy(-_flingCost);
+            }
+            else
+            {
+                return;
+            }
+
             var camera = _cameraGyro._camera;
             var cameraTransform = camera.transform;
             
@@ -87,6 +97,15 @@ public class PlayerUI : MonoBehaviour {
     private void OnTap(Vector2 point, Touch finger)
     {
         _flingStates.Remove(finger.fingerId);
+
+        if (_player.CurrentEnergy >= _flingCost)
+        {
+            _player.AddEnergy(-_flingCost);
+        }
+        else
+        {
+            return;
+        }
 
         var camera = _cameraGyro._camera;
         var cameraTransform = camera.transform;
