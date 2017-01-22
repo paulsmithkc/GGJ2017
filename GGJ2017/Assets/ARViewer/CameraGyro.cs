@@ -12,7 +12,7 @@ public class CameraGyro : MonoBehaviour
     public Camera _camera;
     public MeshRenderer _cameraTarget;
     public int _cameraFPS = 30;
-    public Origin _origin;
+    private Origin _origin;
 
     private GameObject _cameraParent;
     private string _deviceName;
@@ -22,14 +22,6 @@ public class CameraGyro : MonoBehaviour
     private float? _roll;
     private float? _pitch;
     private float? _heading;
-
-    [Serializable]
-    public class Origin
-    {
-        public float latitude;
-        public float longitude;
-        public Transform transform;
-    }
 
     private void StartLocationService()
     {
@@ -49,6 +41,9 @@ public class CameraGyro : MonoBehaviour
         {
             _camera = Camera.main;
         }
+
+        // Find the origin
+        _origin = FindObjectOfType<Origin>();
 
         // Reparent the camera
         _cameraParent = new GameObject("CameraParent");
@@ -128,22 +123,10 @@ public class CameraGyro : MonoBehaviour
             }
         }
 
-        if (_origin != null && _origin.transform != null)
+        if (_origin != null)
         {
-            // SEE https://en.wikipedia.org/wiki/Geographic_coordinate_system
-
-            double latitudeToMeters =
-                111132.92
-                - 559.82 * Mathf.Cos(2 * _origin.latitude)
-                + 1.175 * Mathf.Cos(4 * _origin.latitude)
-                - 0.0023 * Mathf.Cos(6 * _origin.latitude);
-            double longitudeToMeters =
-                111412.84 * Mathf.Cos(_origin.latitude)
-                - 93.5 * Mathf.Cos(3 * _origin.latitude)
-                + 0.118 * Mathf.Cos(5 * _origin.latitude);
-
-            double latitude;
-            double longitude;
+            float latitude;
+            float longitude;
             if (_lastLocation != null)
             {
                 latitude = _lastLocation.Value.latitude;
@@ -151,17 +134,11 @@ public class CameraGyro : MonoBehaviour
             }
             else
             {
-                latitude = _origin.latitude - 10.0 / latitudeToMeters;
-                longitude = _origin.longitude;
+                latitude = _origin._latitude; //- 10.0 / latitudeToMeters;
+                longitude = _origin._longitude;
             }
 
-            _camera.transform.position =
-                _origin.transform.position +
-                new Vector3(
-                    (float)((longitude - _origin.longitude) * longitudeToMeters),
-                    0.0f,
-                    (float)((latitude - _origin.latitude) * latitudeToMeters)
-                );
+            _camera.transform.position = _origin.LocationToWorld(latitude, longitude);
         }
 
         // Rotate the camera at a constant speed

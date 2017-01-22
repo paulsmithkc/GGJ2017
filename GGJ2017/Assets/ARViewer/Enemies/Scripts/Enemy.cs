@@ -46,7 +46,7 @@ public class Enemy : MonoBehaviour {
         _rigidBody.velocity = Vector3.zero;
         _oscillateTheta = curTheta;
 
-        AddHealth(-1);
+        //AddHealth(-1);
         if (Dead == true)
         {
             //particle effect to destroy objects

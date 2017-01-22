@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class EnemySpawn : MonoBehaviour
 {
-
     public GameObject Cube1;
     public GameObject Egg1;
     public GameObject Pawn1;
@@ -14,6 +13,7 @@ public class EnemySpawn : MonoBehaviour
 
     public float _latitude;
     public float _longitude;
+    private Origin _origin;
 
     // Use this for initialization
     void Start()
@@ -21,22 +21,18 @@ public class EnemySpawn : MonoBehaviour
         lastWave = false;
         win = false;
 
-        var cameraGyro = GameObject.FindObjectOfType<CameraGyro>();
-        if (cameraGyro != null)
+        // Find the origin
+        _origin = FindObjectOfType<Origin>();
+        if (_origin != null)
         {
-            cameraGyro._origin = new CameraGyro.Origin
-            {
-                latitude = _latitude,
-                longitude = _longitude,
-                transform = this.transform
-            };
+            transform.position = _origin.LocationToWorld(_latitude, _longitude);
         }
     }
     
 	// Update is called once per frame
 	void Update()
     {
-        if (!win && GameObject.FindGameObjectWithTag("Enemy") == null)
+        if (!win && GetComponentInChildren<Enemy>() == null)
         {
             if (lastWave)
             {
@@ -76,7 +72,8 @@ public class EnemySpawn : MonoBehaviour
                     GameObject.Instantiate<GameObject>(
                         prefab,
                         transform.position + new Vector3(pos.x, 0.0f, pos.y),
-                        Quaternion.identity
+                        Quaternion.identity,
+                        this.transform
                     );
                 }
             }

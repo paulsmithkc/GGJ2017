@@ -71,7 +71,7 @@ public class PlayerUI : MonoBehaviour {
         {
             var pos = _cameraGyro.transform.position;
             _locationField.text = string.Format(
-                "{0:F6} {1:F6} {3}\n{4,3:0} {5,3:0} {6,3:0}",
+                "{0:F5} {1:F5} {3}\n{4,3:0} {5,3:0} {6,3:0}",
                 _cameraGyro.latitude,
                 _cameraGyro.longitude,
                 _cameraGyro.altitude,
