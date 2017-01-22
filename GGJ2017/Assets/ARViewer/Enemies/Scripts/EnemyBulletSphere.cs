@@ -30,7 +30,7 @@ public class EnemyBulletSphere : MonoBehaviour {
             if (_shotDelay <= 0)
             {
                 _shotDelay += 0.3f;
-                for (int i = 0; i < 3; ++i)
+                for (int i = 0; i < 1; ++i)
                 {
                     float fireTheta = Random.Range(0.0f, 360.0f);
                     float firePhi = Random.Range(45.0f, 75.0f);

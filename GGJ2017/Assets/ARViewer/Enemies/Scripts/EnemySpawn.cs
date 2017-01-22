@@ -68,7 +68,7 @@ public class EnemySpawn : MonoBehaviour
 
                 if (prefab != null)
                 {
-                    Vector2 pos = Random.insideUnitCircle * 10.0f;
+                    Vector2 pos = Random.insideUnitCircle * 5.0f;
                     GameObject.Instantiate<GameObject>(
                         prefab,
                         transform.position + new Vector3(pos.x, 0.0f, pos.y),

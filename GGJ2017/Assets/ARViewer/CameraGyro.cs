@@ -17,13 +17,14 @@ public class CameraGyro : MonoBehaviour
     //private GameObject _cameraParent;
     private string _deviceName;
     private WebCamTexture _cameraTexture;
-    private const float _smoothingDuration = 0.2f;
+    private const float _smoothingDuration = 0.5f;
     private LocationInfo? _lastLocation;
     private float? _roll;
     private float? _pitch;
     private float? _heading;
     private EnemySpawn _closestSpawn;
-
+    private Vector3 _velocity;
+    
     private void StartLocationService()
     {
         if (SystemInfo.supportsLocationService && Input.location.isEnabledByUser)
@@ -47,7 +48,9 @@ public class CameraGyro : MonoBehaviour
         _origin = FindObjectOfType<Origin>();
         if (_origin != null)
         {
-            _camera.transform.position = _origin.LocationToWorld(_origin._latitude, _origin._longitude);
+            _camera.transform.position = 
+                _origin.LocationToWorld(_origin._latitude, _origin._longitude)
+                - Vector3.forward * 20.0f;
         }
 
         // Reparent the camera
@@ -66,7 +69,7 @@ public class CameraGyro : MonoBehaviour
 
         // Start the location services
         _lastLocation = null;
-        StartLocationService();
+        //StartLocationService();
 
         _roll = null;
         _pitch = null;
@@ -96,17 +99,19 @@ public class CameraGyro : MonoBehaviour
             }
         }
 
-        if (_origin != null && _lastLocation != null)
-        {
-            float latitude = _lastLocation.Value.latitude;
-            float longitude = _lastLocation.Value.longitude;
-            _camera.transform.position = _origin.LocationToWorld(latitude, longitude);
-        }
+        //if (_origin != null && _lastLocation != null)
+        //{
+        //    float latitude = _lastLocation.Value.latitude;
+        //    float longitude = _lastLocation.Value.longitude;
+        //    _camera.transform.position = _origin.LocationToWorld(latitude, longitude);
+        //}
 
         Quaternion cameraRotation = Quaternion.identity;
+        Vector3 velocity = Vector3.zero;
 
         if (SystemInfo.supportsAccelerometer)
         {
+            //Vector3 accel = new Vector3(0.0f, -1.0f, 0.0f);
             Vector3 accel = Input.acceleration;
             float roll = Mathf.Atan2(-accel.x, -accel.y) * Mathf.Rad2Deg;
             float pitch = -Mathf.Atan2(accel.z, new Vector2(accel.x, accel.y).magnitude) * Mathf.Rad2Deg;
@@ -119,68 +124,78 @@ public class CameraGyro : MonoBehaviour
             cameraRotation =
                 Quaternion.AngleAxis(pitch, Vector3.right) *
                 Quaternion.AngleAxis(roll, Vector3.forward);
+
+            //float forwardMovement = -0.5f - Mathf.Clamp(accel.z, -1.0f, 0.0f);
+            //if (forwardMovement > -0.25f && forwardMovement < 0.25f)
+            //{
+            //    forwardMovement = 0.0f;
+            //}
+            velocity = Vector3.right * Mathf.Clamp(accel.x, -0.5f, 0.5f) * 1.0f; //+ Vector3.forward * forwardMovement * 2.0f;
         }
+
+        var spawns = GameObject.FindObjectsOfType<EnemySpawn>();
+        EnemySpawn closestSpawn = null;
+        float closestDistance = float.PositiveInfinity;
+        Vector3 pos = _camera.transform.position;
+
+        foreach (var s in spawns)
+        {
+            float d = (s.transform.position - pos).magnitude;
+            if (d < closestDistance)
+            {
+                closestSpawn = s;
+                closestDistance = d;
+            }
+        }
+        _closestSpawn = closestSpawn;
 
         float heading = 0.0f;
         if (Input.compass.enabled)
         {
             heading = Input.compass.trueHeading;
         }
+        else if (closestSpawn != null)
+        {
+            var v = closestSpawn.transform.position - pos;
+            //heading = Mathf.LerpAngle(
+            //    _heading ?? 0.0f,
+            //    Mathf.Atan2(v.x, v.z) * Mathf.Rad2Deg,
+            //    deltaTime / (_smoothingDuration + deltaTime)
+            //);
+            heading = Mathf.Atan2(v.x, v.z) * Mathf.Rad2Deg;
+        }
         else
         {
-            var spawns = GameObject.FindObjectsOfType<EnemySpawn>();
-            EnemySpawn closestSpawn = null;
-            float closestDistance = float.PositiveInfinity;
-            Vector3 pos = _camera.transform.position;
-
-            foreach (var s in spawns)
-            {
-                float d = (s.transform.position - pos).magnitude;
-                if (d < closestDistance)
-                {
-                    closestSpawn = s;
-                    closestDistance = d;
-                }
-            }
-
-            if (closestSpawn != null)
-            {
-                _closestSpawn = closestSpawn;
-                var v = closestSpawn.transform.position - pos;
-                heading = Mathf.Lerp(
-                    _heading ?? 0.0f,
-                    Mathf.Atan2(v.x, v.z) * Mathf.Rad2Deg,
-                    deltaTime / (_smoothingDuration + deltaTime)
-                );
-            }
-            else
-            {
-                heading = (Time.time * 60.0f) % 360.0f;
-            }
+            heading = (Time.time * 60.0f) % 360.0f;
         }
-
-        //Debug.LogFormat("Heading {0}", heading);
-        cameraRotation = Quaternion.AngleAxis(heading, Vector3.up) * cameraRotation;
         _heading = heading;
 
+        //Debug.LogFormat("Heading {0}", heading);
+        var headingRotation = Quaternion.AngleAxis(heading, Vector3.up);
+        cameraRotation = headingRotation * cameraRotation;
+        
         _camera.transform.localRotation = Quaternion.Lerp(
             _camera.transform.localRotation,
             cameraRotation,
             deltaTime / (_smoothingDuration + deltaTime)
         );
+        _camera.transform.position += headingRotation * velocity;
+        _velocity = velocity;
 
-        // Rotate the camera at a constant speed
-        // _camera.transform.localRotation = Quaternion.AngleAxis(Time.time * 36.0f, Vector3.up);
+        if (closestSpawn != null)
+        {
+            var p1 = _camera.transform.position;
+            var p2 = closestSpawn.transform.position;
+            var v = (p2 - p1);
+            v *= (1 - 10 / v.magnitude);
+            _camera.transform.position += v * deltaTime / (_smoothingDuration + deltaTime);
+        }
 
         // Update the camera orientation based on the current orientation of the gyro
         //Quaternion r1 = Input.gyro.attitude;
         //Quaternion r2 = new Quaternion(r1.x, r1.y, r1.z, r1.w);
         //_camera.transform.localRotation = r2;
-
-        // Update the camera orientation based on the current orientation of the compass
-        //Quaternion r2 = Quaternion.AngleAxis(Input.compass.trueHeading, Vector3.up);
-        //_camera.transform.localRotation = r2;
-
+        
         if (_cameraTexture == null &&
             _cameraTarget != null &&
             Application.HasUserAuthorization(UserAuthorization.WebCam))
@@ -196,7 +211,7 @@ public class CameraGyro : MonoBehaviour
 
             Debug.Log("using web cam: " + (_deviceName ?? "null"));
 
-            _cameraTexture = new WebCamTexture(_deviceName, Screen.width / 2, Screen.height / 2, _cameraFPS);
+            _cameraTexture = new WebCamTexture(_deviceName, Screen.width / 8, Screen.height / 8, _cameraFPS);
             _cameraTarget.material.mainTexture = _cameraTexture;
             if (!string.IsNullOrEmpty(_deviceName))
             {
@@ -304,6 +319,11 @@ public class CameraGyro : MonoBehaviour
     public float? heading
     {
         get { return _heading; }
+    }
+
+    public Vector3 velocity
+    {
+        get { return _velocity; }
     }
 
     public LocationServiceStatus locationStatus

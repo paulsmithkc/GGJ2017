@@ -70,13 +70,15 @@ public class PlayerUI : MonoBehaviour {
         if (_locationField != null && _cameraGyro != null)
         {
             var pos = _cameraGyro.transform.position;
+            var vel = _cameraGyro.velocity;
             _locationField.text = string.Format(
-                "{0:F5} {1:F5} {3}\n{4,3:0} {5,3:0} {6,3:0}",
+                "{0:F5} {1:F5} {3}\n{4,5:0.0} {5,5:0.0} {6,5:0.0}\n{7,5:0.0} {8,5:0.0} {9,5:0.0}",
                 _cameraGyro.latitude,
                 _cameraGyro.longitude,
                 _cameraGyro.altitude,
                 _cameraGyro.locationStatus,
-                pos.x, pos.y, pos.z
+                pos.x, pos.y, pos.z,
+                vel.x, vel.y, vel.z
             );
         }
     }
@@ -122,7 +124,7 @@ public class PlayerUI : MonoBehaviour {
             );
             var bulletRigidBody = bullet.GetComponent<Rigidbody>();
             bulletRigidBody.velocity =
-                cameraTransform.forward * 5.0f +
+                cameraTransform.forward * 10.0f +
                 (dragEndPoint - dragStartPoint) / (Time.time - state.startTime);
         }
     }
@@ -150,6 +152,6 @@ public class PlayerUI : MonoBehaviour {
         );
         var bulletRigidBody = bullet.GetComponent<Rigidbody>();
         
-        bulletRigidBody.velocity = cameraTransform.forward * 5.0f;
+        bulletRigidBody.velocity = cameraTransform.forward * 10.0f;
     }
 }

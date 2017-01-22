@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour {
     public float _oscillateTheta;
 
     public int Maxhealth = 3;
-    public int CurrentHealth = 3;
+    private int CurrentHealth = 3;
     public bool Dead = false;
 
     // Use this for initialization
@@ -63,7 +63,7 @@ public class Enemy : MonoBehaviour {
                 var fragmentRigidBody = fragment.GetComponent<Rigidbody>();
                 fragmentRigidBody.velocity = fireVelocity;
 
-                Destroy(fragment, 5.0f);
+                Destroy(fragment, 3.0f);
             }
 
             Destroy(this.gameObject);

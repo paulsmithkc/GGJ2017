@@ -211,6 +211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ccfff010ccc57e4b9be111493c316bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _pinchEnabled: 1
 --- !u!114 &100137343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -672,7 +673,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Back
+  m_Text: AR
 --- !u!222 &661534152
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1230,7 +1231,7 @@ GameObject:
   - component: {fileID: 1790936552}
   - component: {fileID: 1790936551}
   m_Layer: 5
-  m_Name: BackButton
+  m_Name: ARButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1302,7 +1303,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Launcher
+          m_StringArgument: ARViewer
           m_BoolArgument: 0
         m_CallState: 1
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,

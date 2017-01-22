@@ -74,9 +74,9 @@ public class GameMap : MonoBehaviour {
 			}
 		};
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
 	}
 
     private void OnPinch(Vector2 center, float scaleFactor, Touch finger1, Touch finger2)

@@ -162,8 +162,7 @@ MonoBehaviour:
   _oscillatePeriod: 7
   _oscillateAmplitude: 2
   _oscillateTheta: 0
-  Maxhealth: 120
-  CurrentHealth: 2
+  Maxhealth: 1
   Dead: 0
 --- !u!114 &114967751043092582
 MonoBehaviour:
