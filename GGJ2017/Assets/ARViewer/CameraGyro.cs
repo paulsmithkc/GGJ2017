@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ public class CameraGyro : MonoBehaviour
     public Camera _camera;
     public MeshRenderer _cameraTarget;
     public int _cameraFPS = 30;
+    public Origin _origin;
 
     private GameObject _cameraParent;
     private string _deviceName;
@@ -20,6 +22,14 @@ public class CameraGyro : MonoBehaviour
     private float? _roll;
     private float? _pitch;
     private float? _heading;
+
+    [Serializable]
+    public class Origin
+    {
+        public float latitude;
+        public float longitude;
+        public Transform transform;
+    }
 
     private void StartLocationService()
     {
@@ -114,30 +124,49 @@ public class CameraGyro : MonoBehaviour
             }
             else if (_lastLocation != null)
             {
-                // SEE https://en.wikipedia.org/wiki/Geographic_coordinate_system
-
-                double latitudeToMeters = 
-                    111132.92 
-                    - 559.82 * Mathf.Cos(2 * loc.latitude) 
-                    + 1.175 * Mathf.Cos(4 * loc.latitude)
-                    - 0.0023 * Mathf.Cos(6 * loc.latitude);
-                double longitudeToMeters =
-                    111412.84 * Mathf.Cos(loc.latitude)
-                    - 93.5 * Mathf.Cos(3 * loc.latitude)
-                    + 0.118 * Mathf.Cos(5 * loc.latitude);
-
-                //_camera.transform.position += new Vector3(
-                //    (float)((loc.longitude - _lastLocation.Value.longitude) * longitudeToMeters),
-                //    0.0f,
-                //    (float)((loc.latitude - _lastLocation.Value.latitude) * latitudeToMeters)
-                //);
                 _lastLocation = loc;
             }
         }
-        
+
+        if (_origin != null && _origin.transform != null)
+        {
+            // SEE https://en.wikipedia.org/wiki/Geographic_coordinate_system
+
+            double latitudeToMeters =
+                111132.92
+                - 559.82 * Mathf.Cos(2 * _origin.latitude)
+                + 1.175 * Mathf.Cos(4 * _origin.latitude)
+                - 0.0023 * Mathf.Cos(6 * _origin.latitude);
+            double longitudeToMeters =
+                111412.84 * Mathf.Cos(_origin.latitude)
+                - 93.5 * Mathf.Cos(3 * _origin.latitude)
+                + 0.118 * Mathf.Cos(5 * _origin.latitude);
+
+            double latitude;
+            double longitude;
+            if (_lastLocation != null)
+            {
+                latitude = _lastLocation.Value.latitude;
+                longitude = _lastLocation.Value.longitude;
+            }
+            else
+            {
+                latitude = _origin.latitude - 10.0 / latitudeToMeters;
+                longitude = _origin.longitude;
+            }
+
+            _camera.transform.position =
+                _origin.transform.position +
+                new Vector3(
+                    (float)((longitude - _origin.longitude) * longitudeToMeters),
+                    0.0f,
+                    (float)((latitude - _origin.latitude) * latitudeToMeters)
+                );
+        }
+
         // Rotate the camera at a constant speed
         // _camera.transform.localRotation = Quaternion.AngleAxis(Time.time * 36.0f, Vector3.up);
-        
+
         // Update the camera orientation based on the current orientation of the gyro
         //Quaternion r1 = Input.gyro.attitude;
         //Quaternion r2 = new Quaternion(r1.x, r1.y, r1.z, r1.w);
