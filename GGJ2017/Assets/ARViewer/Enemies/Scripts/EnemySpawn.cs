@@ -72,7 +72,7 @@ public class EnemySpawn : MonoBehaviour
                     GameObject.Instantiate<GameObject>(
                         prefab,
                         transform.position + new Vector3(pos.x, 0.0f, pos.y),
-                        Quaternion.identity,
+                        Quaternion.AngleAxis(-90.0f, Vector3.right),
                         this.transform
                     );
                 }
@@ -82,6 +82,7 @@ public class EnemySpawn : MonoBehaviour
 
     void OnDrawGizmos()
     {
+        Gizmos.matrix = Matrix4x4.identity;
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(transform.position, 1.0f);
     }

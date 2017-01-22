@@ -366,6 +366,16 @@ Prefab:
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 114856763127446198, guid: 612900920c3094c46ba82d2b8d3ff159,
+        type: 2}
+      propertyPath: _latitude
+      value: 38.71097
+      objectReference: {fileID: 0}
+    - target: {fileID: 114856763127446198, guid: 612900920c3094c46ba82d2b8d3ff159,
+        type: 2}
+      propertyPath: _longitude
+      value: -90.31139
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 612900920c3094c46ba82d2b8d3ff159, type: 2}
   m_IsPrefabParent: 0

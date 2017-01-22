@@ -54,7 +54,7 @@ MonoBehaviour:
   Cube1: {fileID: 1014990126367564, guid: a5ba55dd7118c9747b1debdf41ff82b6, type: 2}
   Egg1: {fileID: 1153362385790620, guid: 20bc50271104d2f42a46a6f359e1685d, type: 2}
   Pawn1: {fileID: 1990903661985798, guid: 8b32476c47a043e4b81d0ef9da680ce3, type: 2}
-  wave: 3
+  wave: 2
   lastWave: 0
   win: 0
   _latitude: 38.72182

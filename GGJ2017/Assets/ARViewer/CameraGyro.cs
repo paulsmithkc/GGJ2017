@@ -14,7 +14,7 @@ public class CameraGyro : MonoBehaviour
     public int _cameraFPS = 30;
     private Origin _origin;
 
-    private GameObject _cameraParent;
+    //private GameObject _cameraParent;
     private string _deviceName;
     private WebCamTexture _cameraTexture;
     private const float _smoothingDuration = 0.2f;
@@ -22,6 +22,7 @@ public class CameraGyro : MonoBehaviour
     private float? _roll;
     private float? _pitch;
     private float? _heading;
+    private EnemySpawn _closestSpawn;
 
     private void StartLocationService()
     {
@@ -44,10 +45,14 @@ public class CameraGyro : MonoBehaviour
 
         // Find the origin
         _origin = FindObjectOfType<Origin>();
+        if (_origin != null)
+        {
+            _camera.transform.position = _origin.LocationToWorld(_origin._latitude, _origin._longitude);
+        }
 
         // Reparent the camera
-        _cameraParent = new GameObject("CameraParent");
-        _cameraParent.transform.position = _camera.transform.position;
+        //_cameraParent = new GameObject("CameraParent");
+        //_cameraParent.transform.position = _camera.transform.position;
         //_cameraParent.transform.Rotate(Vector3.right, 90.0f);
 
         // Enable the gyro
@@ -73,38 +78,6 @@ public class CameraGyro : MonoBehaviour
     {
         float deltaTime = Time.deltaTime;
 
-        Quaternion cameraRotation = Quaternion.identity;
-
-        if (SystemInfo.supportsAccelerometer)
-        {
-            Vector3 accel = Input.acceleration;
-            float roll = Mathf.Atan2(-accel.x, -accel.y) * Mathf.Rad2Deg;
-            float pitch = -Mathf.Atan2(accel.z, new Vector2(accel.x, accel.y).magnitude) * Mathf.Rad2Deg;
-            //Debug.LogFormat("Accl {0} {1} {2}", accel.x, accel.y, accel.z);
-            //Debug.LogFormat("Roll Pitch {0} {1}", roll, pitch);
-
-            _roll = roll;
-            _pitch = pitch;
-
-            cameraRotation =
-                Quaternion.AngleAxis(pitch, Vector3.right) *
-                Quaternion.AngleAxis(roll, Vector3.forward);
-        }
-
-        if (Input.compass.enabled)
-        {
-            float heading = Input.compass.trueHeading;
-            //Debug.LogFormat("Heading {0}", heading);
-            cameraRotation = Quaternion.AngleAxis(heading, Vector3.up) * cameraRotation;
-            _heading = heading;
-        }
-
-        _camera.transform.localRotation = Quaternion.Lerp(
-            _camera.transform.localRotation,
-            cameraRotation,
-            deltaTime / (_smoothingDuration + deltaTime)
-        );
-
         if (Input.location.status != LocationServiceStatus.Initializing &&
             Input.location.status != LocationServiceStatus.Running)
         {
@@ -123,23 +96,78 @@ public class CameraGyro : MonoBehaviour
             }
         }
 
-        if (_origin != null)
+        if (_origin != null && _lastLocation != null)
         {
-            float latitude;
-            float longitude;
-            if (_lastLocation != null)
+            float latitude = _lastLocation.Value.latitude;
+            float longitude = _lastLocation.Value.longitude;
+            _camera.transform.position = _origin.LocationToWorld(latitude, longitude);
+        }
+
+        Quaternion cameraRotation = Quaternion.identity;
+
+        if (SystemInfo.supportsAccelerometer)
+        {
+            Vector3 accel = Input.acceleration;
+            float roll = Mathf.Atan2(-accel.x, -accel.y) * Mathf.Rad2Deg;
+            float pitch = -Mathf.Atan2(accel.z, new Vector2(accel.x, accel.y).magnitude) * Mathf.Rad2Deg;
+            //Debug.LogFormat("Accl {0} {1} {2}", accel.x, accel.y, accel.z);
+            //Debug.LogFormat("Roll Pitch {0} {1}", roll, pitch);
+
+            _roll = roll;
+            _pitch = pitch;
+
+            cameraRotation =
+                Quaternion.AngleAxis(pitch, Vector3.right) *
+                Quaternion.AngleAxis(roll, Vector3.forward);
+        }
+
+        float heading = 0.0f;
+        if (Input.compass.enabled)
+        {
+            heading = Input.compass.trueHeading;
+        }
+        else
+        {
+            var spawns = GameObject.FindObjectsOfType<EnemySpawn>();
+            EnemySpawn closestSpawn = null;
+            float closestDistance = float.PositiveInfinity;
+            Vector3 pos = _camera.transform.position;
+
+            foreach (var s in spawns)
             {
-                latitude = _lastLocation.Value.latitude;
-                longitude = _lastLocation.Value.longitude;
+                float d = (s.transform.position - pos).magnitude;
+                if (d < closestDistance)
+                {
+                    closestSpawn = s;
+                    closestDistance = d;
+                }
+            }
+
+            if (closestSpawn != null)
+            {
+                _closestSpawn = closestSpawn;
+                var v = closestSpawn.transform.position - pos;
+                heading = Mathf.Lerp(
+                    _heading ?? 0.0f,
+                    Mathf.Atan2(v.x, v.z) * Mathf.Rad2Deg,
+                    deltaTime / (_smoothingDuration + deltaTime)
+                );
             }
             else
             {
-                latitude = _origin._latitude; //- 10.0 / latitudeToMeters;
-                longitude = _origin._longitude;
+                heading = (Time.time * 60.0f) % 360.0f;
             }
-
-            _camera.transform.position = _origin.LocationToWorld(latitude, longitude);
         }
+
+        //Debug.LogFormat("Heading {0}", heading);
+        cameraRotation = Quaternion.AngleAxis(heading, Vector3.up) * cameraRotation;
+        _heading = heading;
+
+        _camera.transform.localRotation = Quaternion.Lerp(
+            _camera.transform.localRotation,
+            cameraRotation,
+            deltaTime / (_smoothingDuration + deltaTime)
+        );
 
         // Rotate the camera at a constant speed
         // _camera.transform.localRotation = Quaternion.AngleAxis(Time.time * 36.0f, Vector3.up);
@@ -222,6 +250,11 @@ public class CameraGyro : MonoBehaviour
 
             Gizmos.color = Color.blue;
             Gizmos.DrawRay(pos, Input.acceleration);
+        }
+        if (_closestSpawn != null)
+        {
+            Gizmos.color = Color.white;
+            Gizmos.DrawLine(pos, _closestSpawn.transform.position);
         }
     }
 
