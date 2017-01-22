@@ -211,7 +211,7 @@ public class CameraGyro : MonoBehaviour
 
             Debug.Log("using web cam: " + (_deviceName ?? "null"));
 
-            _cameraTexture = new WebCamTexture(_deviceName, Screen.width / 8, Screen.height / 8, _cameraFPS);
+            _cameraTexture = new WebCamTexture(_deviceName, Screen.width, Screen.height, _cameraFPS);
             _cameraTarget.material.mainTexture = _cameraTexture;
             if (!string.IsNullOrEmpty(_deviceName))
             {
