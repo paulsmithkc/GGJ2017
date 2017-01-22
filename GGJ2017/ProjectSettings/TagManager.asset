@@ -4,9 +4,16 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - Floor
+  - Character
+  - Glove
+  - Target
+  - MegaHit
+  - Controller
+  - Enemy
   - EnemyBullet
   - PlayerBullet
-  - Enemy
+  - EnemySpawn
   layers:
   - Default
   - TransparentFX
@@ -16,9 +23,9 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
+  - AR background
+  - AR background 2
+  - AR foreground
   - 
   - 
   - 

@@ -12,7 +12,7 @@ public class PlayerUI : MonoBehaviour {
     public Text _rotationField;
     public Text _locationField;
 
-    public CameraGyro _cameraGyro;
+    public Camera _camera;
     public GestureDetector _gestureDetector;
     public GameObject _bulletPrefab;
     private const int _flingCost = 2;
@@ -33,9 +33,9 @@ public class PlayerUI : MonoBehaviour {
         {
             _player = GameObject.FindObjectOfType<Player>();
         }
-        if (_cameraGyro == null)
+        if (_camera == null)
         {
-            _cameraGyro = GameObject.FindObjectOfType<CameraGyro>();
+            _camera = Camera.main;
         }
         if (_gestureDetector == null)
         {
@@ -58,29 +58,29 @@ public class PlayerUI : MonoBehaviour {
         {
             _energyField.text = _player.CurrentEnergy.ToString();
         }
-        if (_rotationField != null && _cameraGyro != null)
-        {
-            _rotationField.text = string.Format(
-                "{0,3:0} {1,3:0} {2,3:0}", 
-                _cameraGyro.roll, 
-                _cameraGyro.pitch, 
-                _cameraGyro.heading
-            );
-        }
-        if (_locationField != null && _cameraGyro != null)
-        {
-            var pos = _cameraGyro.transform.position;
-            var vel = _cameraGyro.velocity;
-            _locationField.text = string.Format(
-                "{0:F5} {1:F5} {3}\n{4,5:0.0} {5,5:0.0} {6,5:0.0}\n{7,5:0.0} {8,5:0.0} {9,5:0.0}",
-                _cameraGyro.latitude,
-                _cameraGyro.longitude,
-                _cameraGyro.altitude,
-                _cameraGyro.locationStatus,
-                pos.x, pos.y, pos.z,
-                vel.x, vel.y, vel.z
-            );
-        }
+        //if (_rotationField != null && _cameraGyro != null)
+        //{
+        //    _rotationField.text = string.Format(
+        //        "{0,3:0} {1,3:0} {2,3:0}", 
+        //        _cameraGyro.roll, 
+        //        _cameraGyro.pitch, 
+        //        _cameraGyro.heading
+        //    );
+        //}
+        //if (_locationField != null && _cameraGyro != null)
+        //{
+        //    var pos = _cameraGyro.transform.position;
+        //    var vel = _cameraGyro.velocity;
+        //    _locationField.text = string.Format(
+        //        "{0:F5} {1:F5} {3}\n{4,5:0.0} {5,5:0.0} {6,5:0.0}\n{7,5:0.0} {8,5:0.0} {9,5:0.0}",
+        //        _cameraGyro.latitude,
+        //        _cameraGyro.longitude,
+        //        _cameraGyro.altitude,
+        //        _cameraGyro.locationStatus,
+        //        pos.x, pos.y, pos.z,
+        //        vel.x, vel.y, vel.z
+        //    );
+        //}
     }
 
     private void OnDrag(Vector2 start, Vector2 end, Touch finger)
@@ -112,7 +112,7 @@ public class PlayerUI : MonoBehaviour {
                 return;
             }
 
-            var camera = _cameraGyro._camera;
+            var camera = _camera;
             var cameraTransform = camera.transform;
             
             var dragEndPoint = camera.ScreenToWorldPoint(new Vector3(end.x, end.y, 1.0f));
@@ -142,7 +142,7 @@ public class PlayerUI : MonoBehaviour {
             return;
         }
 
-        var camera = _cameraGyro._camera;
+        var camera = _camera;
         var cameraTransform = camera.transform;
         
         var spawnPoint = camera.ScreenToWorldPoint(new Vector3(point.x, point.y, 1.0f));

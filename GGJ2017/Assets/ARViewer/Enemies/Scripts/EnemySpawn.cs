@@ -84,6 +84,6 @@ public class EnemySpawn : MonoBehaviour
     {
         Gizmos.matrix = Matrix4x4.identity;
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(transform.position, 1.0f);
+        Gizmos.DrawSphere(transform.position, 0.1f);
     }
 }
