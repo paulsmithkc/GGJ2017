@@ -727,6 +727,16 @@ Prefab:
       propertyPath: _cameraGyro
       value: 
       objectReference: {fileID: 2009979770}
+    - target: {fileID: 114493198490958776, guid: d75523774e82e564081a3c7e27d5165f,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114493198490958776, guid: d75523774e82e564081a3c7e27d5165f,
+        type: 2}
+      propertyPath: m_Text
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d75523774e82e564081a3c7e27d5165f, type: 2}
   m_IsPrefabParent: 0
