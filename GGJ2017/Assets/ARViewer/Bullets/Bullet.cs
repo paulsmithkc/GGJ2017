@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float _lifetime = 5.0f;
+    public float _lifetime = 3.0f;
     public int _damage = 1;
 
     // Use this for initialization
-    void Start()
+    public virtual void Start()
     {
         GameObject.DestroyObject(this.gameObject, _lifetime);
     }
 
     // Update is called once per frame
-    void Update()
+    public virtual void Update()
     {
     }
 

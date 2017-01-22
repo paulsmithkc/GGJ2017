@@ -45,7 +45,7 @@ public class EnemySpawn : MonoBehaviour
             int blue = green + Random.Range(3, 7);
             int red = blue + Random.Range(3, 7);
 
-            for (int i = 0; i < wave; ++i)
+            for (int i = 0; i < wave * 2; ++i)
             {
                 GameObject prefab = null;
                 if (i < green)

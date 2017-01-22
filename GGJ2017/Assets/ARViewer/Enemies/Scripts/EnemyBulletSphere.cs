@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class EnemyBulletSphere : MonoBehaviour {
 
-    public GameObject _bulletPrefab;
+    public GameObject _bulletPrefab = null;
+    public float _timePerShot = 0.3f;
+    public int _bulletsPerShot = 1;
+
     private Enemy _enemy;
     private float _shotDelay;
 
@@ -23,14 +26,14 @@ public class EnemyBulletSphere : MonoBehaviour {
     {
         float deltaTime = Time.deltaTime;
         if (!_enemy.Dead &&
-            _enemy._oscillateTheta >= Mathf.PI * 0.25 && 
-            _enemy._oscillateTheta <= Mathf.PI * 0.75)
+            _enemy._oscillateTheta >= Mathf.PI * 1.25 && 
+            _enemy._oscillateTheta <= Mathf.PI * 1.75)
         {
             _shotDelay -= deltaTime;
             if (_shotDelay <= 0)
             {
-                _shotDelay += 0.3f;
-                for (int i = 0; i < 1; ++i)
+                _shotDelay += _timePerShot;
+                for (int i = 0; i < _bulletsPerShot; ++i)
                 {
                     float fireTheta = Random.Range(0.0f, 360.0f);
                     float firePhi = Random.Range(45.0f, 75.0f);

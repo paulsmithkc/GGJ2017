@@ -162,7 +162,7 @@ MonoBehaviour:
   _oscillatePeriod: 8
   _oscillateAmplitude: 2
   _oscillateTheta: 0
-  Maxhealth: 1
+  Maxhealth: 3
   Dead: 0
 --- !u!114 &114557329310574176
 MonoBehaviour:
@@ -175,8 +175,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dec87c84e4383a4e89493d3eaba7a02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bulletPrefab: {fileID: 1440357631082394, guid: f8be021e97969404097c79d559fb564e,
+  _bulletPrefab: {fileID: 1944818246896480, guid: 8dd4682b42382af47865c32092ccbf2a,
     type: 2}
+  _timePerShot: 0.6
+  _bulletsPerShot: 2
 --- !u!135 &135337780830475210
 SphereCollider:
   m_ObjectHideFlags: 1
