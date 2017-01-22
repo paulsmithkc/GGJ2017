@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemySpawn : MonoBehaviour {
+public class EnemySpawn : MonoBehaviour
+{
 
     public GameObject Cube1;
     public GameObject Egg1;
@@ -11,15 +12,30 @@ public class EnemySpawn : MonoBehaviour {
     public bool lastWave = false;
     public bool win = false;
 
-	// Use this for initialization
-	void Start () {
+    public float _latitude;
+    public float _longitude;
+
+    // Use this for initialization
+    void Start()
+    {
         lastWave = false;
         win = false;
-    }
-	
-	// Update is called once per frame
-	void Update () {
 
+        var cameraGyro = GameObject.FindObjectOfType<CameraGyro>();
+        if (cameraGyro != null)
+        {
+            cameraGyro._origin = new CameraGyro.Origin
+            {
+                latitude = _latitude,
+                longitude = _longitude,
+                transform = this.transform
+            };
+        }
+    }
+    
+	// Update is called once per frame
+	void Update()
+    {
         if (!win && GameObject.FindGameObjectWithTag("Enemy") == null)
         {
             if (lastWave)
@@ -65,5 +81,11 @@ public class EnemySpawn : MonoBehaviour {
                 }
             }
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(transform.position, 1.0f);
     }
 }
