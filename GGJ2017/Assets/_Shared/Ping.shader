@@ -1,14 +1,13 @@
-﻿// Based on 
-// https://www.youtube.com/watch?v=gNwduUQrlJs
-// http://answers.unity3d.com/questions/442581/how-to-draw-a-grid-over-parts-of-the-terrain.html
-Shader "Custom/Ground Grid" {
+﻿Shader "Custom/Ping" {
 
-    Properties{
-        _GridThickness("Grid Thickness", Float) = 0.02
-        _GridSpacing("Grid Spacing", Float) = 10.0
-        _GridRadius("Grid Radius", Float) = 20.0
-        _GridColor("Grid Color", Color) = (0.5, 1.0, 0.5, 1.0)
-        //_OutsideColor("Color Outside Grid", Color) = (0.0, 0.0, 0.0, 0.0)
+    Properties {
+        _Color("Color", Color) = (1,1,1,1)
+        _MainTex("Texture", 2D) = "white" {}
+        _DistPeriod("Distance Period", Float) = 0.01
+        _TimePeriod("Time Period", Float) = 1.0
+        _WaveRadius("Wave Radius", Float) = 1.0
+        _Radius("Radius", Float) = 2.0
+        _Center("Center", Vector) = (0,0,0,0)
     }
 
     SubShader {
@@ -26,18 +25,22 @@ Shader "Custom/Ground Grid" {
             #pragma vertex vert  
             #pragma fragment frag 
 
-            uniform float _GridThickness;
-            uniform float _GridSpacing;
-            uniform float _GridRadius;
-            uniform float4 _GridColor;
-            //uniform float4 _OutsideColor;
-
+            uniform float4 _Color;
+            uniform sampler2D _MainTex;
+            uniform float4 _MainTex_ST;
+            uniform float _DistPeriod;
+            uniform float _TimePeriod;
+            uniform float _WaveRadius;
+            uniform float _Radius;
+            uniform float4 _Center;
+            
             struct vertexInput {
                 float4 vertex : POSITION;
             };
             struct vertexOutput {
                 float4 pos : SV_POSITION;
-                float4 worldPos : TEXCOORD0;
+                float2 uv : TEXCOORD0;
+                float4 worldPos : TEXCOORD1;
             };
 
             vertexOutput vert(vertexInput input) {
@@ -53,14 +56,18 @@ Shader "Custom/Ground Grid" {
             }
 
             float4 frag(vertexOutput input) : COLOR {
-                if (frac(input.worldPos.x / _GridSpacing) < _GridThickness ||
-                    frac(input.worldPos.z / _GridSpacing) < _GridThickness) {
-
-                    float dist = distance(input.worldPos.xyz, float3(0.0, 0.0, 0.0));
-                    float4 color = _GridColor;
-                    color.a = 1.0 - (dist / _GridRadius);
+                float time = _Time.w;
+                float dist = distance(input.worldPos.xy, _Center.xy);
+                float x = dist / _DistPeriod - time / _TimePeriod;
+                if (x > -_WaveRadius && x < _WaveRadius)
+                {
+                    float4 color = _Color;
+                    color.a = max(sin(x), 0);
+                    color.a *= (1.0 - (dist / _Radius));
                     return color;
-                } else {
+                }
+                else
+                {
                     return float4(0.0, 0.0, 0.0, 0.0);
                 }
             }
