@@ -347,11 +347,11 @@ public class ARController : MonoBehaviour
 				break;
 			case RuntimePlatform.IPhonePlayer:					// Unity Player on iOS.
 				break;
-			case RuntimePlatform.MetroPlayerX86:				// Unity Player on Windows Store X86.
-			case RuntimePlatform.MetroPlayerX64:				// Unity Player on Windows Store X64.
-			case RuntimePlatform.MetroPlayerARM:				// Unity Player on Windows Store ARM.
-				PluginFunctions.arwRegisterLogCallback(Log);
-				break;
+			//case RuntimePlatform.MetroPlayerX86:				// Unity Player on Windows Store X86.
+			//case RuntimePlatform.MetroPlayerX64:				// Unity Player on Windows Store X64.
+			//case RuntimePlatform.MetroPlayerARM:				// Unity Player on Windows Store ARM.
+			//	PluginFunctions.arwRegisterLogCallback(Log);
+			//	break;
 			default:
                 break;
         }
@@ -447,11 +447,11 @@ public class ARController : MonoBehaviour
 				break;
             case RuntimePlatform.IPhonePlayer:
 				break;
-			case RuntimePlatform.MetroPlayerX86:
-			case RuntimePlatform.MetroPlayerX64:
-			case RuntimePlatform.MetroPlayerARM:
-				PluginFunctions.arwRegisterLogCallback(null);
-				break;
+			//case RuntimePlatform.MetroPlayerX86:
+			//case RuntimePlatform.MetroPlayerX64:
+			//case RuntimePlatform.MetroPlayerARM:
+			//	PluginFunctions.arwRegisterLogCallback(null);
+			//	break;
 			default:
                 break;
         }
