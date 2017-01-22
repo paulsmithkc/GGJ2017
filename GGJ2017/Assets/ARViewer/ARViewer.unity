@@ -702,6 +702,11 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 223027743976290836, guid: d75523774e82e564081a3c7e27d5165f,
+        type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1382545960}
     - target: {fileID: 114507250810354450, guid: d75523774e82e564081a3c7e27d5165f,
         type: 2}
       propertyPath: _player
@@ -712,11 +717,6 @@ Prefab:
       propertyPath: _cameraGyro
       value: 
       objectReference: {fileID: 2009979770}
-    - target: {fileID: 223027743976290836, guid: d75523774e82e564081a3c7e27d5165f,
-        type: 2}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 1382545960}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d75523774e82e564081a3c7e27d5165f, type: 2}
   m_IsPrefabParent: 0
